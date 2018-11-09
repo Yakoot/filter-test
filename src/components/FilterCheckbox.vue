@@ -37,7 +37,6 @@ export default {
     cursor: pointer;
     padding: 0;
     font-size: 15px;
-    font-weight: bold;
   }
 
   // Box.

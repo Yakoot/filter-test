@@ -1,11 +1,11 @@
 <template>
-  <div id="app">
+  <div id="app" class="search-filter" :class="$mq">
     <FilterSelect :options="sortOptions" v-model="sortValue"></FilterSelect>
     <CheckboxSelect :options="filterOptions.accomodation" @change="filterOnChange($event, 'accomodation')" label="Accommodation"></CheckboxSelect>
     <CheckboxSelect :options="filterOptions.boardBasis" @change="filterOnChange($event, 'boardBasis')" label="Board basis"></CheckboxSelect>
     <CheckboxSelect :options="filterOptions.goodFor" @change="filterOnChange($event, 'goodFor')" label="Good for"></CheckboxSelect>
     <CheckboxSelect :options="filterOptions.resort" @change="filterOnChange($event, 'resort')" label="Country/Resort" :tree="true"></CheckboxSelect>
-    <button :disabled="applyDisabled">Apply</button>
+    <button class="apply-button" :disabled="applyDisabled">Apply</button>
   </div>
 </template>
 
@@ -22,9 +22,9 @@ export default {
   data() {
     return {
       sortOptions: [
-        { label: "Sort by recommended", value: 0},
-        { label: "Sort by high to low", value: 1},
-        { label: "Sort by low to high", value: 2},
+        { label: "Sort by recommended", value: 0 },
+        { label: "Sort by high to low", value: 1 },
+        { label: "Sort by low to high", value: 2 }
       ],
       sortValue: 0,
       filterOptions: {
@@ -102,23 +102,32 @@ export default {
 };
 </script>
 
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
+<style lang="scss">
+  /* #app { */
+    /* font-family: "Avenir", Helvetica, Arial, sans-serif; */
+    /* -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center; */
+  /* } */
 
-@font-face {
-  font-family: "Neilsonicons";
-  src: url("https://www.neilson.co.uk/themes/custom/neilsontheme/dist/assets/fonts/Neilsonicons.woff")
-    format("woff");
-}
+  @font-face {
+    font-family: "Neilsonicons";
+    src: url("https://www.neilson.co.uk/themes/custom/neilsontheme/dist/assets/fonts/Neilsonicons.woff")
+      format("woff");
+  }
+
+  .search-filter {
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(100px, 1fr)) 81px;
+    .apply-button {
+      width: 100%;
+    }
+  }
 </style>

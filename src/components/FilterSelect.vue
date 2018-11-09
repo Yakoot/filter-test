@@ -8,7 +8,7 @@
       <div class="dropdown" v-if="isDropped">
         <ul class="list">
           <li v-for="item in selectOptions" :key="item.value" @click="onClick(item.value)">
-            <strong>{{ item.label }}</strong>
+            {{ item.label }}
           </li>
         </ul>
       </div>
@@ -51,18 +51,18 @@ export default {
 .filter-select {
   position: relative;
   margin-left: -2px;
+  width: 100%;
   .button-wrapper {
     position: relative;
     cursor: pointer;
     button {
-      padding: 20px 60px;
       width: 100%;
       height: 60px;
       border: 3px solid #f3f3f3;
       background: white;
       outline: none;
       padding-left: 10px;
-      padding-right: 55px;
+      padding-right: 25px;
       text-align: left;
       cursor: pointer;
     }

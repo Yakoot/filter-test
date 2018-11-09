@@ -92,13 +92,12 @@ export default {
 <style lang="scss" scoped>
 .checkbox-select {
   position: relative;
-  width: 186px;
+  width: 100%;
   margin-left: -2px;
   .button-wrapper {
     position: relative;
     cursor: pointer;
     button {
-      padding: 20px 60px;
       width: 100%;
       height: 60px;
       border: 3px solid #f3f3f3;
