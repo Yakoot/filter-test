@@ -1,11 +1,11 @@
 <template>
-  <div class="filter-select" v-click-outside="hide">
+  <div class="filter-select" :class="$mq" v-click-outside="hide">
     <div class="button-wrapper" @click="dropIt">
-      <button>{{ selectedLabel }}</button>
+      <button :class="$mq">{{ selectedLabel }}</button>
       <div class="arrow" :class="{active: isDropped}"></div>
     </div>
-    <transition name="slide">
-      <div class="dropdown" v-if="isDropped">
+    <transition name="expand">
+      <div class="dropdown" :class="$mq" v-show="isDropped">
         <ul class="list">
           <li v-for="item in selectOptions" :key="item.value" @click="onClick(item.value)">
             {{ item.label }}
@@ -14,16 +14,22 @@
       </div>
     </transition>
   </div>
+
 </template>
 
 <script>
+import ClickOutside from "vue-click-outside";
+
 export default {
+  directives: {
+    ClickOutside
+  },
   props: ["options", "value"],
   data() {
     return {
       isDropped: false,
       selected: this.value
-    }    
+    };
   },
   computed: {
     selectedLabel() {
@@ -41,6 +47,9 @@ export default {
       this.selected = value;
       this.$emit("input", value);
       this.isDropped = false;
+    },
+    hide() {
+      this.isDropped = false;
     }
   }
 };
@@ -49,22 +58,54 @@ export default {
 
 <style lang="scss" scoped>
 .filter-select {
-  position: relative;
-  margin-left: -2px;
+  margin: 0;
+  position: unset;
   width: 100%;
+  border-bottom: 3px solid #f3f3f3;
+  &.xs,
+  &.sm,
+  &.md {
+    .expand-enter-active,
+    .expand-leave-active {
+      transition: all 0.3s ease-in;
+      max-height: 500px;
+    }
+    .expand-enter,
+    .expand-leave-to {
+      max-height: 0;
+      transition: all 0.3s ease-out;
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+
+  &.lg,
+  &.xl {
+    position: relative;
+    border: none;
+    .expand-enter,
+    .expand-leave-to {
+      transform: scaleY(0);
+    }
+  }
+
   .button-wrapper {
     position: relative;
     cursor: pointer;
     button {
       width: 100%;
       height: 60px;
-      border: 3px solid #f3f3f3;
+      border: none;
       background: white;
       outline: none;
       padding-left: 10px;
       padding-right: 25px;
       text-align: left;
       cursor: pointer;
+      &.lg,
+      &.xl {
+        border: 3px solid #f3f3f3;
+      }
     }
     .arrow {
       position: absolute;
@@ -77,7 +118,7 @@ export default {
       background-image: url(https://www.neilson.co.uk/themes/custom/neilsontheme/dist/assets/img/icons/down_arrow_orange.svg);
       background-repeat: no-repeat;
       background-position: center;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease-out;
       &.active {
         transform: rotate(-180deg);
       }
@@ -96,19 +137,22 @@ export default {
     }
   }
   .dropdown {
-    position: absolute;
-    top: 58px;
-    left: 0;
     margin: 0;
     padding: 0;
-    transform-origin: top;
-    transition: transform 0.4s ease-in-out;
-    border: 2px solid #ececec;
     background: white;
-    width: max-content;
-    min-width: 100%;
-    overflow: hidden;
-    box-shadow: 0 2px 4px 0 rgba(164, 172, 177, 0.502);
+    width: 100%;
+    &.lg,
+    &.xl {
+      position: absolute;
+      top: 58px;
+      left: 0;
+      width: max-content;
+      min-width: 100%;
+      border: 2px solid #ececec;
+      box-shadow: 0 2px 4px 0 rgba(164, 172, 177, 0.502);
+      transform-origin: top;
+      transition: transform 0.3s ease-in-out;
+    }
   }
   .list {
     list-style-type: none;
@@ -123,9 +167,5 @@ export default {
       }
     }
   }
-}
-.slide-enter,
-.slide-leave-to {
-  transform: scaleY(0);
 }
 </style>

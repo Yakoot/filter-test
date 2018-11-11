@@ -1,18 +1,18 @@
 <template>
-  <div class="checkbox-select" v-click-outside="hide">
+  <div class="checkbox-select" :class="$mq" v-click-outside="hide">
     <div class="button-wrapper" :class="{'has-checked': hasChecked}" @click="dropIt">
-      <button>{{ label }}</button>
-      <div class="arrow" :class="{active: isDropped}"></div>
+      <button :class="$mq">{{ label }}</button>
+      <SelectArrow :active="isDropped" :has-checked="hasChecked"/>
     </div>
-    <transition name="slide">
-      <div class="dropdown" v-if="isDropped && !tree">
+    <transition name="expand">
+      <div class="dropdown" :class="$mq" v-if="isDropped && !tree">
         <ul class="list">
           <li v-for="item in options" :key="item.value">
             <FilterCheckbox :id="item.value" :label="item.label" v-model="item.checked" @input="checkHasChecked" />
           </li>
         </ul>
       </div>
-      <div class="dropdown" v-if="isDropped && tree">
+      <div class="dropdown" :class="$mq" v-if="isDropped && tree">
         <ul class="list" v-for="(item, index) in options" :key="createId(item.label, index)">
           <li class="parent">
             <FilterCheckbox :id="createId(item.label)" :label="item.label" v-model="item.checked" @input="changeAll($event, item.values)" />
@@ -28,10 +28,11 @@
 
 <script>
 import FilterCheckbox from "./FilterCheckbox";
+import SelectArrow from "./SelectArrow";
 import ClickOutside from "vue-click-outside";
 
 export default {
-  components: { FilterCheckbox },
+  components: { FilterCheckbox, SelectArrow },
   directives: {
     ClickOutside
   },
@@ -40,18 +41,14 @@ export default {
     isDropped: false,
     hasChecked: false
   }),
-  computed: {},
-  watch: {
-    options() {
-      this.hasChecked = this.isChecked();
-    }
-  },
   methods: {
     dropIt() {
       this.isDropped = !this.isDropped;
     },
     hide() {
-      this.isDropped = false;
+      if (["lg", "xl"].includes(this.$mq)) {
+        this.isDropped = false;
+      }      
     },
     createId(name, index) {
       return name.replace(/\W/, "") + "-" + index;
@@ -91,37 +88,52 @@ export default {
 
 <style lang="scss" scoped>
 .checkbox-select {
-  position: relative;
+  margin: 0;
+  position: unset;
   width: 100%;
-  margin-left: -2px;
+  border-bottom: 3px solid #f3f3f3;
+  &.xs,
+  &.sm,
+  &.md {
+    .expand-enter-active,
+    .expand-leave-active {
+      transition: all 0.3s ease-in;
+      max-height: 500px;
+    }
+    .expand-enter,
+    .expand-leave-to {
+      max-height: 0;
+      transition: all 0.3s ease-out;
+      overflow: hidden;
+      padding: 0;
+      opacity: 0;
+    }
+  }
+  &.lg,
+  &.xl {
+    position: relative;
+    border: none;
+    .expand-enter,
+    .expand-leave-to {
+      transform: scaleY(0);
+    }
+  }
   .button-wrapper {
     position: relative;
     cursor: pointer;
     button {
       width: 100%;
       height: 60px;
-      border: 3px solid #f3f3f3;
+      border: none;
       background: white;
       outline: none;
       padding-left: 10px;
       padding-right: 55px;
       text-align: left;
       cursor: pointer;
-    }
-    .arrow {
-      position: absolute;
-      right: 10px;
-      top: 0;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      width: 20px;
-      background-image: url(https://www.neilson.co.uk/themes/custom/neilsontheme/dist/assets/img/icons/down_arrow_orange.svg);
-      background-repeat: no-repeat;
-      background-position: center;
-      transition: transform 0.3s ease;
-      &.active {
-        transform: rotate(-180deg);
+      &.lg,
+      &.xl {
+        border: 3px solid #f3f3f3;
       }
     }
     &.has-checked::after {
@@ -138,19 +150,22 @@ export default {
     }
   }
   .dropdown {
-    position: absolute;
-    top: 58px;
-    left: 0;
     margin: 0;
     padding: 0;
-    transform-origin: top;
-    transition: transform 0.4s ease-in-out;
-    border: 2px solid #ececec;
     background: white;
-    width: max-content;
-    min-width: 100%;
-    overflow: hidden;
-    box-shadow: 0 2px 4px 0 rgba(164, 172, 177, 0.502);
+    width: 100%;
+    &.lg,
+    &.xl {
+      position: absolute;
+      top: 58px;
+      left: 0;
+      width: max-content;
+      min-width: 100%;
+      border: 2px solid #ececec;
+      box-shadow: 0 2px 4px 0 rgba(164, 172, 177, 0.502);
+      transform-origin: top;
+      transition: transform 0.4s ease-in-out;
+    }
   }
   .list {
     list-style-type: none;
@@ -164,9 +179,5 @@ export default {
       }
     }
   }
-}
-.slide-enter,
-.slide-leave-to {
-  transform: scaleY(0);
 }
 </style>

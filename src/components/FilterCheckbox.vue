@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-checkbox-wrapper">
+  <div class="filter-checkbox-wrapper" :class="$mq">
     <input class="filter-checkbox" :id="checkboxId" type="checkbox" v-model="checkboxValue" @change="$emit('input', checkboxValue)">
     <label :for="checkboxId">{{ label }}</label>
   </div>
@@ -46,15 +46,17 @@ export default {
     display: inline-block;
     vertical-align: middle;
     text-align: center;
-    width: 21px;
-    height: 21px;
+    width: 15px;
+    height: 15px;
     border: 2px solid #a4acb1;
     background: transparent;
     border-radius: 2px;
+    margin-top: -2px;
   }
 
   // Checkmark.
   &:checked + label:before {
+    content: "\63";
     content: "B";
     font-family: Neilsonicons !important;
     left: 5px;
@@ -62,7 +64,38 @@ export default {
     background: #2b5b71;
     border-color: #2b5b71;
     color: white;
-    line-height: 22px;
+    line-height: 15px;
+    font-size: 12px;
+  }
+
+  &.lg,
+  &.xl {
+    & + label:before {
+      content: "";
+      margin-right: 10px;
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+      width: 15px;
+      height: 15px;
+      border: 2px solid #a4acb1;
+      background: transparent;
+      border-radius: 2px;
+      margin-top: -2px;
+    }
+
+    // Checkmark.
+    &:checked + label:before {
+      content: "B";
+      font-family: Neilsonicons !important;
+      left: 5px;
+      top: 9px;
+      background: #2b5b71;
+      border-color: #2b5b71;
+      color: white;
+      line-height: 15px;
+      font-size: 12px;
+    }
   }
 }
 </style>
